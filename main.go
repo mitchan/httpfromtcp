@@ -1,7 +1,31 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"io"
+	"log"
+	"os"
+)
 
 func main() {
-	fmt.Println("I hope I get the job!")
+	file, err := os.Open("messages.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	for {
+		bytes := make([]byte, 8)
+		_, err := file.Read(bytes)
+		if err != nil {
+			if errors.Is(err, io.EOF) {
+				os.Exit(0)
+			}
+
+			log.Fatal(err)
+		}
+
+		fmt.Printf("read: %s\n", bytes)
+	}
 }
