@@ -22,6 +22,10 @@ func main() {
 		bytes := make([]byte, 8)
 		n, err := file.Read(bytes)
 		if err != nil {
+			if currentLine != "" {
+				fmt.Printf("read: %s\n", currentLine)
+			}
+
 			if errors.Is(err, io.EOF) {
 				os.Exit(0)
 			}
@@ -47,6 +51,4 @@ func main() {
 			}
 		}
 	}
-
-	fmt.Printf("read: %s\n", currentLine)
 }
