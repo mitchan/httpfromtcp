@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -15,9 +16,11 @@ func main() {
 	}
 	defer file.Close()
 
+	currentLine := ""
+
 	for {
 		bytes := make([]byte, 8)
-		_, err := file.Read(bytes)
+		n, err := file.Read(bytes)
 		if err != nil {
 			if errors.Is(err, io.EOF) {
 				os.Exit(0)
@@ -26,6 +29,24 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("read: %s\n", bytes)
+		read := string(bytes[:n])
+		lines := strings.Split(read, "\n")
+
+		if len(lines) == 1 {
+			currentLine += lines[0]
+			continue
+		}
+
+		for i, line := range lines {
+			if i != len(lines)-1 {
+				currentLine += line
+				fmt.Printf("read: %s\n", currentLine)
+				currentLine = ""
+			} else {
+				currentLine = line
+			}
+		}
 	}
+
+	fmt.Printf("read: %s\n", currentLine)
 }
