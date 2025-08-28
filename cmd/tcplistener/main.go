@@ -65,5 +65,7 @@ func main() {
 		for line := range getLinesChannel(connection) {
 			fmt.Printf("read: %s\n", line)
 		}
+
+		fmt.Println("Connection to ", connection.RemoteAddr(), "closed")
 	}
 }
